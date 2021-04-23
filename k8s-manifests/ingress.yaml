@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: python-demo-app-web
+  namespace: python-demo-app
+spec:
+  rules:
+    - host: python-app.demo.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: python-demo-app-web
+              servicePort: http

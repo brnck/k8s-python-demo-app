@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-demo-app-web
+  namespace: python-demo-app
+spec:
+  selector:
+    app: python-demo-app
+    role: web
+  ports:
+    - name: http
+      port: 80
+      targetPort: gunicorn

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-demo-app-web
+  namespace: python-demo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-demo-app
+      role: web
+  template:
+    metadata:
+      labels:
+        app: python-demo-app
+        role: web
+    spec:
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: python-demo-app-web
+          image: python-demo-app:init
+          args:
+            - '--bind'
+            - '0.0.0.0'
+            - 'app:app'
+          ports:
+            - name: gunicorn
+              containerPort: 8000
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 200m
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              port: gunicorn
+              path: /
+          livenessProbe:
+            initialDelaySeconds: 10
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - 'pidof -x gunicorn'

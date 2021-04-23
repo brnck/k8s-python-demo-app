@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-world-job
+  namespace: python-demo-app
+spec:
+  template:
+    metadata:
+      labels:
+        app: python-demo-app
+        role: hello-world-job
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: python-demo-app-hello-world-job
+          image: python-demo-app:init
+          command:
+            - python3
+          args:
+            - cli.py
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 200m
