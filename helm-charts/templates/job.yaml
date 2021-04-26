@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-job
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: python-demo-app
+        role: hello-world-job
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: {{ .Release.Name }}-job
+          image: {{ .Values.job.image }}:{{ .Values.job.tag }}
+          command:
+          {{- range .Values.job.command }}
+            - {{ quote . }}
+          {{- end }}
+          args:
+          {{- range .Values.job.args }}
+            - {{ quote . }}
+          {{- end }}
+          resources: {{ toYaml .Values.job.resources | nindent 12 }}

@@ -1,15 +1,17 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: python-demo-app-web
-  namespace: python-demo-app
+  name: {{ .Release.Name }}-web
+  namespace: {{ .Release.Namespace }}
 spec:
   rules:
-    - host: python-app.demo.com
+  {{- range .Values.ingress.rules }}
+    - host: {{ .host }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
-              serviceName: python-demo-app-web
+              serviceName: {{ $.Release.Name }}-web
               servicePort: http
+  {{- end }}

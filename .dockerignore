@@ -3,6 +3,6 @@
 .git/
 .venv/
 __pycache__/
-k8s-manifests/
+helm-charts/
 .gitignore
 Dockerfile

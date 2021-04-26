@@ -1,0 +1,19 @@
+web:
+  replicas: 4
+  args:
+    - '--bind'
+    - '0.0.0.0'
+    - '--workers'
+    - '6'
+    - 'app:app'
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 200m
+    limits:
+      memory: 256Mi
+      cpu: 200m
+
+ingress:
+  rules:
+    - host: staging-app.demo.com

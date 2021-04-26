@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-demo-app-web
-  namespace: python-demo-app
+  name: {{ .Release.Name }}-web
+  namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.web.replicas }}
   selector:
     matchLabels:
       app: python-demo-app
@@ -19,22 +19,16 @@ spec:
         runAsGroup: 1000
         runAsUser: 1000
       containers:
-        - name: python-demo-app-web
-          image: python-demo-app:init
+        - name: {{ .Release.Name }}-web
+          image: {{ .Values.web.image }}:{{ .Values.web.tag }}
           args:
-            - '--bind'
-            - '0.0.0.0'
-            - 'app:app'
+          {{- range .Values.web.args }}
+            - {{ quote . }}
+          {{- end }}
           ports:
             - name: gunicorn
               containerPort: 8000
-          resources:
-            requests:
-              memory: 128Mi
-              cpu: 100m
-            limits:
-              memory: 256Mi
-              cpu: 200m
+          resources: {{ toYaml .Values.web.resources | nindent 12 }}
           readinessProbe:
             initialDelaySeconds: 10
             httpGet:
